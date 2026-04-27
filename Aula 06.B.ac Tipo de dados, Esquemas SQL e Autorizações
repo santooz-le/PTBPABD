@@ -1,0 +1,31 @@
+-- Questão 01: Concede SELECT em INSTRUCTOR (exceto salary) e TAKES (exceto grade) para User_B
+GRANT SELECT (ID, name, dept_name) ON INSTRUCTOR TO User_B;
+GRANT SELECT (ID, course_id, sec_id, semester, year) ON TAKES TO User_B;
+
+-- Questão 02: Concede SELECT e UPDATE em SECTION (apenas em course_id, sec_id, semester e year) para User_C
+GRANT SELECT (course_id, sec_id, semester, year), 
+      UPDATE (course_id, sec_id, semester, year) 
+ON SECTION TO User_C;
+
+-- Questão 03: Concede SELECT em INSTRUCTOR, STUDENT e na view grade_points para User_D
+GRANT SELECT ON INSTRUCTOR TO User_D;
+GRANT SELECT ON STUDENT TO User_D;
+GRANT SELECT ON grade_points TO User_D;
+
+-- Questão 04: Cria uma view filtrando alunos de 'Civil Eng.' e concede SELECT nela para User_E
+CREATE VIEW view_student_civil_eng AS
+SELECT * FROM STUDENT WHERE dept_name = 'Civil Eng.';
+
+GRANT SELECT ON view_student_civil_eng TO User_E;
+
+-- Questão 05: Revoga os privilégios do usuário User_E
+REVOKE ALL PRIVILEGES ON view_student_civil_eng FROM User_E;
+
+-- Questão 06: Mostra os privilégios de tabela e de coluna dos usuários especificados
+SELECT grantee AS Usuario, table_name AS Tabela, privilege_type AS Privilegio
+FROM information_schema.role_table_grants
+WHERE grantee IN ('User_A', 'User_B', 'User_C', 'User_D', 'User_E');
+
+SELECT grantee AS Usuario, table_name AS Tabela, column_name AS Coluna, privilege_type AS Privilegio
+FROM information_schema.column_privileges
+WHERE grantee IN ('User_A', 'User_B', 'User_C', 'User_D', 'User_E');
